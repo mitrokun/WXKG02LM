@@ -1,0 +1,63 @@
+blueprint:
+  name: Aqara Switch (WXKG02LM) via Xiaomi Gateway 3
+  description: Automate your Xiaomi Aqara Wireless Remote Switch connected via the Xiaomi Gateway 3 and associated custom Home Assistant integration.
+  source_url: https://gist.github.com/mitrokun/WXKG02LM
+  domain: automation
+  input:
+    button_sensor:
+      name: Switch Sensor Entity
+      description: The sensor attached to the switch device.
+      selector:
+        entity:
+          domain: sensor
+          device_class: action
+    linked_entity_id:
+      name: Linked Entity (Optional)
+      description: Optionally link an entity to use it's custom attributes defined in customize.yaml.
+      default: ''
+      selector:
+        entity: {}
+    left_button_single_press:
+      name: Left button
+      description: Action to run on single press
+      default: []
+      selector:
+        action: {}
+    right_button_single_press:
+      name: Right button
+      description: Action to run on double press
+      default: []
+      selector:
+        action: {}
+    both_buttons_single_press:
+      name: Both buttons
+      description: Action to run on triple press
+      default: []
+      selector:
+        action: {}
+mode: parallel
+max_exceeded: silent
+trigger:
+- platform: event
+  event_type: state_changed
+  event_data:
+    entity_id: !input 'button_sensor'
+action:
+- variables:
+    button_entity: !input 'button_sensor'
+    linked_entity: !input 'linked_entity_id'
+    action: >-
+      {%- if trigger.event.data.new_state is defined -%}
+        {{ (trigger.event.data.new_state.state|default('')|string) }}
+      {%- else -%}
+        {{ '' }}
+      {%- endif -%}
+    default_state: >-
+      {{ action|string != '' }}
+- choose:
+  - conditions: '{{ action == "button_1_single" }}'
+    sequence: !input 'left_button_single_press'
+  - conditions: '{{ action == "button_2_single" }}'
+    sequence: !input 'right_button_single_press'
+  - conditions: '{{ action == "button_both_single" }}'
+    sequence: !input 'both_buttons_single_press'
