@@ -1,6 +1,6 @@
 blueprint:
   name: Aqara Switch (WXKG02LM) via Xiaomi Gateway 3
-  description: Automate your Xiaomi Aqara Wireless Remote Switch connected via the Xiaomi Gateway 3 and associated custom Home Assistant integration.
+  description: Automate your Aqara Wireless Switch connected via the Xiaomi Gateway 3 and associated custom Home Assistant integration.
   source_url: https://gist.github.com/mitrokun/WXKG02LM
   domain: automation
   input:
